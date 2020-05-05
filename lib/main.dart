@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Startup Name Generator',
-      home: RandomWords(),
+      home: Home(),
     );
   }
 }
@@ -58,4 +58,26 @@ class RandomWordsState extends State<RandomWords> {
 class RandomWords extends StatefulWidget {
   @override
   RandomWordsState createState() => RandomWordsState();
+}
+
+class Home extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Home'),
+      ),
+      body: Center(
+        child: RaisedButton(
+          child: Text('Start'),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => RandomWords()),
+            );
+          },
+        ),
+      ),
+    );
+  }
 }
