@@ -17,6 +17,8 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
+  flutter_google_places: ^0.2.5
+  geocoder: ^0.2.1
   flutter:
     sdk: flutter
 
