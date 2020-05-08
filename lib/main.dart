@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -34,7 +35,7 @@ class MyCustomForm extends StatefulWidget {
 class MyCustomFormState extends State<MyCustomForm> {
   final _formKey = GlobalKey<FormState>();
   final myController = TextEditingController();
-  var valueToSave = '';
+  List<dynamic> listToSave = [];
 
   @override
   Widget build(BuildContext context) {
@@ -57,10 +58,10 @@ class MyCustomFormState extends State<MyCustomForm> {
             child: RaisedButton(
               onPressed: () async{
                 if (_formKey.currentState.validate()) {
-                  var list = await _read();
+                  var savedList = await _read();
                   var myControllerText = myController.text;
-                  list += '\n$myControllerText';
-                  valueToSave = list;
+                  savedList.add(myControllerText);
+                  listToSave = savedList;
                   await _save();
                   Scaffold.of(context)
                       .showSnackBar(SnackBar(content: Text('Saved!')));
@@ -78,15 +79,15 @@ class MyCustomFormState extends State<MyCustomForm> {
     _read() async {
     final prefs = await SharedPreferences.getInstance();
     final key = 'savedValue';
-    final value = prefs.getString(key) ?? 0;
+    final value = jsonDecode(prefs.getString(key) ?? '');
     return value;
   }
 
   _save() async {
     final prefs = await SharedPreferences.getInstance();
     final key = 'savedValue';
-    final value = valueToSave;
-    prefs.setString(key, value);
+    final value = listToSave;
+    prefs.setString(key, jsonEncode(value));
     print('saved $value');
   }
 }
