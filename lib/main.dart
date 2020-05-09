@@ -58,11 +58,12 @@ class MyCustomFormState extends State<MyCustomForm> {
             child: RaisedButton(
               onPressed: () async{
                 if (_formKey.currentState.validate()) {
-                  var savedList = await _read();
-                  var myControllerText = myController.text;
+                  List<dynamic> savedList = await _read();
+                  String myControllerText = myController.text;
                   savedList.add(myControllerText);
                   listToSave = savedList;
                   await _save();
+
                   Scaffold.of(context)
                       .showSnackBar(SnackBar(content: Text('Saved!')));
                   myController.text = "";
@@ -71,23 +72,50 @@ class MyCustomFormState extends State<MyCustomForm> {
               child: Text('Submit'),
             ),
           ),
+          new Expanded(
+            child: listBuilder(),
+          ),
         ],
       ),
     );
   }
 
-    _read() async {
+  Widget listBuilder() {
+    return new ListView.builder(
+      itemCount: listToSave.length,
+      itemBuilder: (BuildContext ctxt, int index) => buildBody(ctxt, index)
+    );
+  }
+
+  Widget buildBody(BuildContext ctxt, int index) {
+    return new ListTile(
+        title: Text(listToSave[index]),
+    );
+  }
+
+  _read() async {
     final prefs = await SharedPreferences.getInstance();
-    final key = 'savedValue';
-    final value = jsonDecode(prefs.getString(key) ?? '');
+    final key = 'savedList';
+    final value = jsonDecode(prefs.getString(key) ?? '[]');
     return value;
   }
 
   _save() async {
     final prefs = await SharedPreferences.getInstance();
-    final key = 'savedValue';
+    final key = 'savedList';
     final value = listToSave;
     prefs.setString(key, jsonEncode(value));
     print('saved $value');
+    listBuilder();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    _read().then((value){
+      listToSave = value;
+      setState(() {});
+    });
+    super.initState();
   }
 }
