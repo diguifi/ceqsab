@@ -19,20 +19,52 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: Text(appTitle),
         ),
-        body: MyCustomForm(),
+        body: Home(),
       ),
     );
   }
 }
 
-class MyCustomForm extends StatefulWidget {
+class Home extends StatelessWidget {
   @override
-  MyCustomFormState createState() {
-    return MyCustomFormState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: RaisedButton(
+          child: Text('Open menu'),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => PlacesMenu()),
+            );
+          },
+        ),
+      ),
+    );
   }
 }
 
-class MyCustomFormState extends State<MyCustomForm> {
+class PlacesMenu extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Add places'),
+      ),
+      body: PlaceRegister(),
+    );
+  }
+}
+
+
+class PlaceRegister extends StatefulWidget {
+  @override
+  PlaceRegisterState createState() {
+    return PlaceRegisterState();
+  }
+}
+
+class PlaceRegisterState extends State<PlaceRegister> {
   final _formKey = GlobalKey<FormState>();
   final myController = TextEditingController();
   List<dynamic> listToSave = [];
